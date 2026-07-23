@@ -1,9 +1,8 @@
 <?php
 /**
  * Plugin Name:       Universal PWA
- * Plugin URI:        https://countrysightstours.com
  * Description:       Turns any WordPress site into an installable Progressive Web App. Dynamic manifest, minimal service worker, and a smart custom install-prompt banner. No offline caching, no push notifications.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 5.6
  * Requires PHP:      7.2
  * Author:            Universal PWA
@@ -16,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'UPWA_VERSION', '1.0.0' );
+define( 'UPWA_VERSION', '1.1.0' );
 define( 'UPWA_PLUGIN_FILE', __FILE__ );
 define( 'UPWA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'UPWA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

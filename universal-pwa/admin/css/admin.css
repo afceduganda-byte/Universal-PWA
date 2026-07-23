@@ -1,30 +1,84 @@
-.upwa-settings-wrap .upwa-columns {
+.upwa-settings-wrap {
+	max-width: 980px;
+}
+
+.upwa-header {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin: 20px 0 24px;
+}
+
+.upwa-header-icon {
+	flex: 0 0 auto;
+	width: 56px;
+	height: 56px;
+	border-radius: 16px;
+	background: #fff;
+	border: 1px solid #e2e2e6;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 2px 8px rgba( 0, 0, 0, 0.06 );
+}
+
+.upwa-header-icon img {
+	border-radius: 10px;
+}
+
+.upwa-header h1 {
+	margin: 0 0 2px;
+	padding: 0;
+	font-size: 22px;
+}
+
+.upwa-header-tagline {
+	margin: 0;
+	color: #646970;
+	font-size: 13px;
+	max-width: 560px;
+}
+
+.upwa-layout {
 	display: flex;
 	gap: 24px;
 	align-items: flex-start;
-	margin-top: 16px;
 	flex-wrap: wrap;
 }
 
-.upwa-column-main {
+.upwa-card {
+	background: #fff;
+	border: 1px solid #e2e2e6;
+	border-radius: 14px;
+	box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.03 );
+	padding: 24px 28px;
+}
+
+.upwa-card-main {
 	flex: 1 1 480px;
-	background: #fff;
-	border: 1px solid #dcdcde;
-	padding: 20px;
 }
 
-.upwa-column-side {
-	flex: 0 0 340px;
+.upwa-card-main .form-table th {
+	padding-left: 0;
+	font-weight: 600;
 }
 
-.upwa-preview-box {
-	background: #fff;
-	border: 1px solid #dcdcde;
-	padding: 16px 20px;
+.upwa-card-preview {
+	flex: 0 0 320px;
 }
 
-.upwa-preview-box h2 {
+.upwa-card-preview h2 {
 	margin-top: 0;
+	font-size: 15px;
+}
+
+.upwa-preview-label {
+	margin: 16px 0 8px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: #8c8f94;
 }
 
 .upwa-preview-icons {
@@ -40,29 +94,48 @@
 
 .upwa-preview-icon img {
 	display: block;
-	border-radius: 8px;
+	border-radius: 12px;
 	background: #f0f0f1;
-	margin-bottom: 4px;
+	margin-bottom: 6px;
+	border: 1px solid #ececee;
 }
 
 .upwa-logo-field img {
 	display: block;
-	border-radius: 8px;
+	border-radius: 12px;
 	object-fit: cover;
-	margin-bottom: 8px;
-	border: 1px solid #dcdcde;
+	margin-bottom: 10px;
+	border: 1px solid #e2e2e6;
+}
+
+.upwa-preview-note {
+	margin-top: 12px;
+}
+
+.upwa-advanced {
+	margin-top: 16px;
+	border-top: 1px solid #ececee;
+	padding-top: 12px;
+}
+
+.upwa-advanced summary {
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 600;
+	color: #2271b1;
 }
 
 .upwa-manifest-preview {
 	background: #1e1e1e;
 	color: #d1e8ff;
 	padding: 12px;
-	border-radius: 6px;
+	border-radius: 8px;
 	font-size: 11px;
 	max-height: 260px;
 	overflow: auto;
 	white-space: pre-wrap;
 	word-break: break-all;
+	margin-top: 10px;
 }
 
 .upwa-banner-preview {
@@ -72,15 +145,16 @@
 	align-items: center;
 	gap: 10px;
 	background: var( --upwa-bg );
-	border: 1px solid #dcdcde;
-	border-radius: 12px;
-	padding: 10px 12px;
-	box-shadow: 0 2px 10px rgba( 0, 0, 0, 0.08 );
+	border: 1px solid #e2e2e6;
+	border-radius: 16px;
+	padding: 12px 14px;
+	box-shadow: 0 2px 10px rgba( 0, 0, 0, 0.06 );
 }
 
 .upwa-banner-preview img {
-	border-radius: 8px;
+	border-radius: 10px;
 	flex: 0 0 auto;
+	box-shadow: 0 1px 4px rgba( 0, 0, 0, 0.12 );
 }
 
 .upwa-banner-preview-text {
@@ -107,8 +181,14 @@
 	background: var( --upwa-theme );
 	color: #fff;
 	border-radius: 999px;
-	padding: 6px 12px;
+	padding: 7px 14px;
 	font-size: 11px;
 	font-weight: 600;
 	white-space: nowrap;
+}
+
+@media ( max-width: 900px ) {
+	.upwa-card-preview {
+		flex: 1 1 100%;
+	}
 }

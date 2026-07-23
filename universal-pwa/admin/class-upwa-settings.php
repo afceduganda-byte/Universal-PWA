@@ -168,10 +168,11 @@ class UPWA_Settings {
 			esc_attr( $logo_id )
 		);
 		echo '<p>';
-		echo '<button type="button" class="button" id="upwa_choose_logo">' . esc_html__( 'Choose logo', 'universal-pwa' ) . '</button> ';
+		echo '<button type="button" class="button button-primary" id="upwa_choose_logo">' . esc_html__( 'Upload app icon', 'universal-pwa' ) . '</button> ';
 		echo '<button type="button" class="button-link" id="upwa_remove_logo" style="' . ( $logo_id ? '' : 'display:none;' ) . '">' . esc_html__( 'Remove', 'universal-pwa' ) . '</button>';
 		echo '</p>';
-		echo '<p class="description">' . esc_html__( 'If empty, falls back to the WordPress Site Icon (Customizer), then the site favicon.', 'universal-pwa' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Recommended: a square PNG or JPG, at least 512×512px. We automatically generate every size the install prompt needs (192×192, 512×512, and a maskable version) from it.', 'universal-pwa' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Left empty, it falls back to your WordPress Site Icon (Customizer → Site Identity), then your site favicon.', 'universal-pwa' ) . '</p>';
 		echo '</div>';
 	}
 

@@ -4,7 +4,7 @@ Tags: pwa, progressive web app, manifest, installable, service worker
 Requires at least: 5.6
 Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,6 +50,11 @@ Apple's WebKit engine (used by Safari and by Chrome/Edge on iOS) doesn't support
 Icons regenerate automatically on save. If you still see an old icon, that's very likely a *browser* cache of the manifest/icon files rather than the plugin — hard refresh, or reinstall the PWA.
 
 == Changelog ==
+
+= 1.1.0 =
+* Simplified the Settings → Universal PWA screen to focus on the essentials: app icon (with recommended-size guidance), app name, and a compact preview. The manifest.json detail is now tucked behind an "Advanced" toggle.
+* Redesigned the front-end install banner with a more premium look: frosted-glass card, refined shadows/typography, smoother animation, and a subtle "waiting for browser" state on the Install button.
+* Removed a hardcoded plugin URI so the plugin list's "Visit plugin site" link no longer points anywhere — this is a fully site-agnostic, universal plugin.
 
 = 1.0.0 =
 * Initial release.
