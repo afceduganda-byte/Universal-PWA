@@ -16,21 +16,65 @@ class UPWA_Settings {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'admin_init', array( $this, 'maybe_redirect_to_setup' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( UPWA_PLUGIN_FILE ), array( $this, 'add_action_links' ) );
 	}
 
+	/**
+	 * A dedicated top-level menu item (rather than tucking it under
+	 * Settings) so the app's setup dashboard is immediately visible in
+	 * the admin sidebar.
+	 */
 	public function add_settings_page() {
-		add_options_page(
+		add_menu_page(
 			__( 'Universal PWA', 'universal-pwa' ),
 			__( 'Universal PWA', 'universal-pwa' ),
 			'manage_options',
 			self::PAGE_SLUG,
-			array( $this, 'render_page' )
+			array( $this, 'render_page' ),
+			'dashicons-smartphone',
+			80
 		);
 	}
 
+	/**
+	 * Adds a prominent "Set Up App" link on the Plugins list row, so
+	 * setting up the app doesn't depend on already knowing where the
+	 * menu lives.
+	 */
+	public function add_action_links( $links ) {
+		$setup_link = '<a href="' . esc_url( admin_url( 'admin.php?page=' . self::PAGE_SLUG ) ) . '"><strong>' . esc_html__( 'Set Up App', 'universal-pwa' ) . '</strong></a>';
+		array_unshift( $links, $setup_link );
+		return $links;
+	}
+
+	/**
+	 * Sends the admin straight to the setup dashboard right after
+	 * activation (but not on bulk/network activation), so "installing
+	 * the plugin" and "setting up the app" feel like one step.
+	 */
+	public function maybe_redirect_to_setup() {
+		if ( ! get_transient( 'upwa_activation_redirect' ) ) {
+			return;
+		}
+
+		delete_transient( 'upwa_activation_redirect' );
+
+		if ( wp_doing_ajax() || isset( $_GET['activate-multi'] ) || is_network_admin() ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		wp_safe_redirect( admin_url( 'admin.php?page=' . self::PAGE_SLUG ) );
+		exit;
+	}
+
 	public function enqueue_admin_assets( $hook ) {
-		if ( 'settings_page_' . self::PAGE_SLUG !== $hook ) {
+		if ( 'toplevel_page_' . self::PAGE_SLUG !== $hook ) {
 			return;
 		}
 

@@ -24,6 +24,11 @@ class UPWA_Activation {
 		}
 
 		flush_rewrite_rules();
+
+		// Picked up by UPWA_Settings::maybe_redirect_to_setup() on the very
+		// next admin request, so activating the plugin drops the admin
+		// straight onto the setup dashboard instead of the plugins list.
+		set_transient( 'upwa_activation_redirect', true, 30 );
 	}
 
 	public static function deactivate() {
