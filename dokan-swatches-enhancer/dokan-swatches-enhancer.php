@@ -123,6 +123,7 @@ final class Dokan_Swatches_Enhancer {
 .dse-scrollbar-thumb{position:absolute;top:0;left:0;height:100%;min-width:24px;border-radius:4px;background:rgba(0,0,0,.35);cursor:grab;touch-action:none}
 .dse-scrollbar-thumb:active{cursor:grabbing;background:rgba(0,0,0,.5)}
 
+.dse-color-swatch,.dse-color-swatch-thumb,.dse-size-pill,.dse-scroll-arrow,.dse-scrollbar-thumb{box-sizing:border-box}
 .dse-color-swatch{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 auto;width:78px;padding:0;border:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .dse-color-swatch-thumb{position:relative;width:78px;height:78px;border-radius:12px;border:2px solid transparent;background:#f2f2f2;overflow:hidden;transition:border-color .15s ease,transform .1s ease}
 .dse-color-swatch-thumb img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
@@ -394,12 +395,16 @@ CSS;
 		var dragStartScrollLeft = 0;
 		var scrollerEl = $scroller.get(0);
 
+		// scrollWidth reflects the true overflowing content extent. $track.outerWidth()
+		// would not: .dse-color-swatches is a plain block box inside the scroller, so its
+		// own width just fills the parent (normal block `width:auto` behavior) - it does
+		// not grow to fit its nowrap flex children, even though they visually overflow it.
 		function maxScroll() {
-			return Math.max(0, $track.outerWidth(true) - $scroller.innerWidth());
+			return Math.max(0, scrollerEl.scrollWidth - $scroller.innerWidth());
 		}
 
 		function updateScrollbar() {
-			var trackWidth = $track.outerWidth(true);
+			var trackWidth = scrollerEl.scrollWidth;
 			var viewportWidth = $scroller.innerWidth();
 
 			if (trackWidth <= viewportWidth + 1) {
