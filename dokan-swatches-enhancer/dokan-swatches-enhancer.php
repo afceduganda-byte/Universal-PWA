@@ -3,7 +3,7 @@
  * Plugin Name:       Dokan Swatches Enhancer
  * Plugin URI:        https://github.com/afceduganda-byte/universal-pwa
  * Description:       Mobile-first color image swatches and size pill buttons for WooCommerce variation forms. Works for any variable product regardless of who created it - store admins editing products directly in WP Admin > Products, and Dokan vendors managing their own listings, both get swatches automatically. Also plays nicely with YayCurrency Pro and PesaPal on multi-vendor marketplaces. Zero configuration required.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * WC requires at least: 5.0
@@ -22,7 +22,7 @@ if ( ! class_exists( 'Dokan_Swatches_Enhancer' ) ) :
 
 final class Dokan_Swatches_Enhancer {
 
-	const VERSION = '1.0.0';
+	const VERSION = '1.1.0';
 	const HANDLE  = 'dokan-swatches-enhancer';
 
 	/** @var Dokan_Swatches_Enhancer|null */
@@ -105,12 +105,12 @@ final class Dokan_Swatches_Enhancer {
 .dse-hide-row{display:none!important}
 
 /* ---------- Color swatches: mobile-first swipeable strip ---------- */
-.dse-color-swatches{display:flex;align-items:flex-start;gap:10px;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding:12px 2px 16px;margin:10px 0 16px;list-style:none;scrollbar-width:thin}
+.dse-color-swatches{display:flex;align-items:flex-start;gap:16px;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding:14px 4px 18px;margin:10px 0 16px;list-style:none;scrollbar-width:thin}
 .dse-color-swatches::-webkit-scrollbar{height:4px}
 .dse-color-swatches::-webkit-scrollbar-thumb{background:rgba(0,0,0,.2);border-radius:4px}
-.dse-color-swatch{flex:0 0 auto;scroll-snap-align:start;width:56px;height:56px;padding:0;border-radius:10px;border:2px solid transparent;background:#f2f2f2;cursor:pointer;overflow:hidden;position:relative;line-height:0;transition:border-color .15s ease,transform .1s ease;-webkit-tap-highlight-color:transparent}
+.dse-color-swatch{flex:0 0 auto;scroll-snap-align:start;width:72px;height:72px;padding:0;border-radius:12px;border:2px solid transparent;background:#f2f2f2;cursor:pointer;overflow:hidden;position:relative;line-height:0;transition:border-color .15s ease,transform .1s ease;-webkit-tap-highlight-color:transparent}
 .dse-color-swatch img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
-.dse-color-swatch--text{display:flex;align-items:center;justify-content:center;font-size:11px;line-height:1.25;padding:4px;text-align:center;color:#333;font-weight:600}
+.dse-color-swatch--text{display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1.25;padding:6px;text-align:center;color:#333;font-weight:600}
 .dse-color-swatch:active{transform:scale(.94)}
 .dse-color-swatch.selected{border-color:#111}
 .dse-color-swatch.selected::after{content:"";position:absolute;inset:0;box-shadow:0 0 0 2px #fff inset;border-radius:8px;pointer-events:none}
@@ -118,8 +118,12 @@ final class Dokan_Swatches_Enhancer {
 .dse-color-swatch.dse-disabled::before{content:"";position:absolute;left:-4px;right:-4px;top:50%;border-top:1px solid rgba(0,0,0,.6);transform:rotate(-20deg)}
 
 @media (min-width:768px){
-	.dse-color-swatches{flex-wrap:wrap;overflow-x:visible;scroll-snap-type:none;padding:8px 0 16px}
-	.dse-color-swatch{width:48px;height:48px}
+	.dse-color-swatches{flex-wrap:wrap;overflow-x:visible;scroll-snap-type:none;padding:10px 0 18px}
+	.dse-color-swatch{width:64px;height:64px}
+}
+
+@media (min-width:1024px){
+	.dse-color-swatch{width:72px;height:72px}
 }
 
 /* ---------- Size pills ---------- */
