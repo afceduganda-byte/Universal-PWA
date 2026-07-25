@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Dokan Swatches Enhancer
  * Plugin URI:        https://github.com/afceduganda-byte/universal-pwa
- * Description:       Mobile-first color image swatches and size pill buttons for WooCommerce variation forms. Built for multi-vendor marketplaces running Dokan Pro, YayCurrency Pro and PesaPal. Zero configuration for vendors.
+ * Description:       Mobile-first color image swatches and size pill buttons for WooCommerce variation forms. Works for any variable product regardless of who created it - store admins editing products directly in WP Admin > Products, and Dokan vendors managing their own listings, both get swatches automatically. Also plays nicely with YayCurrency Pro and PesaPal on multi-vendor marketplaces. Zero configuration required.
  * Version:           1.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
@@ -61,6 +61,13 @@ final class Dokan_Swatches_Enhancer {
 		return (int) apply_filters( 'dse_variation_threshold', 100 );
 	}
 
+	/**
+	 * Intentionally has no Dokan-specific checks (vendor ID, store context,
+	 * `dokan()` availability, etc). It only asks WooCommerce "is this a
+	 * single variable product page?" - which is true whether the product
+	 * was created by a store admin in WP Admin > Products or by a Dokan
+	 * vendor in their own dashboard. Both get swatches with zero setup.
+	 */
 	private function is_target_page() {
 		if ( ! function_exists( 'is_product' ) || ! is_product() ) {
 			return false;
