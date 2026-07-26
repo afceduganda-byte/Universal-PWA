@@ -3,7 +3,7 @@
  * Plugin Name:       Dokan Swatches Enhancer
  * Plugin URI:        https://github.com/afceduganda-byte/universal-pwa
  * Description:       Mobile-first color image swatches and size pill buttons for WooCommerce variation forms. Works for any variable product regardless of who created it - store admins editing products directly in WP Admin > Products, and Dokan vendors managing their own listings, both get swatches automatically. Also plays nicely with YayCurrency Pro and PesaPal on multi-vendor marketplaces. Zero configuration required.
- * Version:           1.2.0
+ * Version:           1.2.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * WC requires at least: 5.0
@@ -22,7 +22,7 @@ if ( ! class_exists( 'Dokan_Swatches_Enhancer' ) ) :
 
 final class Dokan_Swatches_Enhancer {
 
-	const VERSION = '1.2.0';
+	const VERSION = '1.2.1';
 	const HANDLE  = 'dokan-swatches-enhancer';
 
 	/** @var Dokan_Swatches_Enhancer|null */
@@ -108,7 +108,11 @@ final class Dokan_Swatches_Enhancer {
 .dse-attr-label{font-size:14px;font-weight:600;margin:0 0 10px;color:#111;line-height:1.3}
 
 /* ---------- Color swatches: label + arrows + scroll viewport + custom scrollbar ---------- */
-.dse-color-group{margin:10px 0 18px}
+/* contain:inline-size stops this group's natural (unscrolled) content width from
+   bubbling up and forcing a themes flex column (e.g. .summary) to refuse to
+   shrink below it - verified this can otherwise widen the whole page past the
+   viewport on narrow screens, on themes whose product layout uses flexbox. */
+.dse-color-group{margin:10px 0 18px;contain:inline-size}
 .dse-color-carousel{position:relative;display:flex;align-items:flex-start;gap:8px}
 .dse-color-scroller{flex:1 1 auto;min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain}
 .dse-color-scroller::-webkit-scrollbar{display:none}
@@ -378,7 +382,26 @@ CSS;
 		$select.addClass('dse-hidden-select').data('dse-wrap', $track);
 		$select.after($group);
 
-		self.initColorCarousel($carousel, $scroller, $track, $prevBtn, $nextBtn, $scrollbarTrack, $scrollbarThumb);
+		// Deliberately NOT calling initColorCarousel() here yet. At this point the
+		// group still sits inside the WooCommerce variations <table>, which uses
+		// the browser default table-layout:auto - that sizes a table column to fit
+		// its content's natural (unconstrained) width, not the space actually
+		// available. With 6-8+ color swatches that natural width is easily
+		// 700-800px+, and letting the browser lay that out even briefly can balloon
+		// the whole table/summary column past the viewport (verified: on a 390px
+		// mobile viewport this pushed window.innerWidth to 485px before the fix).
+		// initColorCarousel() is called from relocateColorSwatches() instead, once
+		// the group has already been moved out of the table and the measurements
+		// it takes reflect real, final layout.
+		$group.data('carousel-refs', {
+			$carousel: $carousel,
+			$scroller: $scroller,
+			$track: $track,
+			$prevBtn: $prevBtn,
+			$nextBtn: $nextBtn,
+			$scrollbarTrack: $scrollbarTrack,
+			$scrollbarThumb: $scrollbarThumb
+		});
 	};
 
 	/**
@@ -562,33 +585,39 @@ CSS;
 	 * so WooCommerce's own variation-matching logic keeps working unmodified.
 	 */
 	DSEProduct.prototype.relocateColorSwatches = function () {
+		var $colorGroup = this.$form.find('.dse-color-group').first();
+		if (!$colorGroup.length) {
+			return;
+		}
+
 		var $summary = this.$form.closest('.summary');
 		if (!$summary.length) {
 			$summary = $('.summary.entry-summary').first();
 		}
 		var $price = $summary.find('.price').first();
-		var $colorGroup = this.$form.find('.dse-color-group').first();
 
-		if (!$price.length || !$colorGroup.length) {
-			return;
+		if ($price.length) {
+			var $select = $colorGroup.prev('select.dse-hidden-select');
+			var $row = $select.length ? $select.closest('tr') : null;
+
+			$colorGroup.addClass('dse-swatches-relocated');
+			$price.after($colorGroup);
+
+			if ($row && $row.length) {
+				$row.addClass('dse-hide-row');
+			}
 		}
+		// If no .price was found (unusual theme markup), the group is left where
+		// it was built and initColorCarousel() still runs below - it just won't
+		// be relocated next to the price.
 
-		var $select = $colorGroup.prev('select.dse-hidden-select');
-		var $row = $select.length ? $select.closest('tr') : null;
-
-		$colorGroup.addClass('dse-swatches-relocated');
-		$price.after($colorGroup);
-
-		if ($row && $row.length) {
-			$row.addClass('dse-hide-row');
-		}
-
-		// Widths were measured before relocation (still inside the narrower
-		// table cell); re-run the cutoff/scrollbar math now that the carousel
-		// sits in its final spot next to the price.
-		var $carousel = $colorGroup.find('.dse-color-carousel').first();
-		if ($carousel.length) {
-			$(window).trigger('resize.dse-color-carousel');
+		// initColorCarousel() (which measures real widths and applies the cutoff)
+		// is deliberately called here, AFTER the group has reached its final
+		// position, and not from buildColorSwatches() - see the note there on why
+		// measuring while still inside the variations <table> is unsafe.
+		var refs = $colorGroup.data('carousel-refs');
+		if (refs) {
+			this.initColorCarousel(refs.$carousel, refs.$scroller, refs.$track, refs.$prevBtn, refs.$nextBtn, refs.$scrollbarTrack, refs.$scrollbarThumb);
 		}
 	};
 
@@ -609,7 +638,14 @@ CSS;
 
 		this.$form.on('reset_data', function () {
 			self.resetGalleryImage();
-			self.$form.find('.dse-color-swatch, .dse-size-pill').removeClass('selected').attr('aria-pressed', 'false');
+			// Not $form.find('.dse-color-swatch, ...') - the color group has been
+			// relocated OUT of the form (next to the price), so it would silently
+			// miss those buttons and leave the color swatch looking "selected"
+			// after Clear. syncSelectedState uses the stored dse-wrap reference,
+			// which stays valid regardless of where the element now lives in the DOM.
+			self.$form.find('.variations select').each(function () {
+				self.syncSelectedState($(this));
+			});
 		});
 
 		this.$form.on('change', '.variations select', function () {
@@ -798,11 +834,10 @@ CSS;
 			$select.val(next).trigger('change');
 		});
 
-		// Clicking WooCommerce's native "Clear" link should also clear our swatch UI.
-		$(document).on('click', '.reset_variations', function () {
-			var $form = $(this).closest('.variations_form');
-			$form.find('.dse-color-swatch, .dse-size-pill').removeClass('selected').attr('aria-pressed', 'false');
-		});
+		// No separate handler for WooCommerce's native "Clear" (.reset_variations)
+		// link needed: clicking it empties every select, which WooCommerce always
+		// follows with its own `reset_data` event - already handled above, and
+		// correctly (see the dse-wrap-based fix note on that handler).
 	});
 })(window.jQuery);
 JS;
