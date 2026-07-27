@@ -3,7 +3,7 @@
  * Plugin Name:       Rhema Fashion Shop Grid Styler
  * Plugin URI:        https://github.com/afceduganda-byte/universal-pwa
  * Description:       Pure-CSS visual styling for the ShopEngine product grid (cards, "View Product" buttons, Sale badges, titles and prices). Injects styles only via wp_head - no existing functionality, markup, or behavior is changed.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Rhema Fashion
@@ -130,6 +130,34 @@ function rhema_shop_styler_output_css() {
 	.shopengine-single-product-item svg {
 		color: #333333;
 		fill: #333333;
+	}
+
+	/* ==========================================================================
+	   5. Mobile: give the grid more real width so cards/images/titles breathe
+	   ========================================================================== */
+	/* On mobile, Astra's normal site container padding (~1.8-2.4em per side)
+	   squeezes the ShopEngine grid down, so each of the 2 cards-per-row ends up
+	   narrow and titles wrap with almost no margin before the card edge -
+	   reading as text "disappearing" on the right. Pulling just the ShopEngine
+	   widget out to bleed past that padding (rather than reducing the site's
+	   global container padding, which would also affect the hero banner, icon
+	   row, and footer) gives real extra width back to the grid specifically,
+	   without touching anything else on the page. */
+	@media (max-width: 600px) {
+		.shopengine-widget {
+			margin-left: -16px !important;
+			margin-right: -16px !important;
+			padding-left: 8px !important;
+			padding-right: 8px !important;
+		}
+		.shopengine-single-product-item {
+			padding: 4px !important;
+		}
+		.shopengine-single-product-item .product-title,
+		.shopengine-single-product-item .product-title a {
+			word-break: break-word !important;
+			overflow-wrap: break-word !important;
+		}
 	}
 	</style>
 	<?php
