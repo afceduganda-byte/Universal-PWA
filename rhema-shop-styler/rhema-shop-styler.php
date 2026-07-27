@@ -3,7 +3,7 @@
  * Plugin Name:       Rhema Fashion Shop Grid Styler
  * Plugin URI:        https://github.com/afceduganda-byte/universal-pwa
  * Description:       Pure-CSS visual styling for the ShopEngine product grid (cards, "View Product" buttons, Sale badges, titles and prices). Injects styles only via wp_head - no existing functionality, markup, or behavior is changed.
- * Version:           1.2.0
+ * Version:           1.3.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Rhema Fashion
@@ -100,6 +100,13 @@ function rhema_shop_styler_output_css() {
 	/* ==========================================================================
 	   3. "Sale!" badge
 	   ========================================================================== */
+	/* ShopEngine's own default badge is a fixed-size circle (explicit
+	   width/height + border-radius:50%, the standard way to draw a perfect
+	   circle). Squaring off the corners alone left that same large fixed box
+	   behind - a big orange square instead of a small circle - which is why
+	   it was swallowing so much of the product image. Forcing width/height
+	   back to content-driven "auto" (plus a small font-size and tight
+	   padding) is what actually shrinks it. */
 	.product-tag-sale-badge li.badge.sale,
 	li.badge.sale,
 	.onsale,
@@ -109,7 +116,14 @@ function rhema_shop_styler_output_css() {
 		font-weight: bold !important;
 		text-transform: uppercase !important;
 		border-radius: 3px !important;
-		padding: 4px 8px !important;
+		display: inline-block !important;
+		width: auto !important;
+		height: auto !important;
+		min-width: 0 !important;
+		min-height: 0 !important;
+		font-size: 11px !important;
+		line-height: 1.4 !important;
+		padding: 3px 8px !important;
 	}
 
 	/* ==========================================================================
