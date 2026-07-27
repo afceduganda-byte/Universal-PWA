@@ -3,7 +3,7 @@
  * Plugin Name:       Dokan Swatches Enhancer
  * Plugin URI:        https://github.com/afceduganda-byte/universal-pwa
  * Description:       Mobile-first color image swatches and size pill buttons for WooCommerce variation forms. Works for any variable product regardless of who created it - store admins editing products directly in WP Admin > Products, and Dokan vendors managing their own listings, both get swatches automatically. Also plays nicely with YayCurrency Pro and PesaPal on multi-vendor marketplaces. Zero configuration required.
- * Version:           1.2.1
+ * Version:           1.3.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * WC requires at least: 5.0
@@ -22,7 +22,7 @@ if ( ! class_exists( 'Dokan_Swatches_Enhancer' ) ) :
 
 final class Dokan_Swatches_Enhancer {
 
-	const VERSION = '1.2.1';
+	const VERSION = '1.3.0';
 	const HANDLE  = 'dokan-swatches-enhancer';
 
 	/** @var Dokan_Swatches_Enhancer|null */
@@ -105,29 +105,44 @@ final class Dokan_Swatches_Enhancer {
 .dse-hide-row{display:none!important}
 
 /* ---------- Attribute section heading (used for the Colour label) ---------- */
-.dse-attr-label{font-size:14px;font-weight:600;margin:0 0 10px;color:#111;line-height:1.3}
+.dse-attr-label{font-size:14px;font-weight:600;margin:0;color:#111;line-height:1.3}
 
-/* ---------- Color swatches: label + arrows + scroll viewport + custom scrollbar ---------- */
+/* ---------- Color swatches: header row (label + arrows) + bordered native-scroll row ---------- */
 /* contain:inline-size stops this group's natural (unscrolled) content width from
    bubbling up and forcing a themes flex column (e.g. .summary) to refuse to
    shrink below it - verified this can otherwise widen the whole page past the
    viewport on narrow screens, on themes whose product layout uses flexbox. */
 .dse-color-group{margin:10px 0 18px;contain:inline-size}
-.dse-color-carousel{position:relative;display:flex;align-items:flex-start;gap:8px}
-.dse-color-scroller{flex:1 1 auto;min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain}
-.dse-color-scroller::-webkit-scrollbar{display:none}
-.dse-color-swatches{display:flex;align-items:flex-start;gap:18px;padding:6px 4px 10px;margin:0;list-style:none}
 
-.dse-scroll-arrow{flex:0 0 auto;width:32px;height:32px;margin-top:12px;border-radius:50%;border:1px solid #ddd;background:#fff;color:#111;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12);-webkit-tap-highlight-color:transparent}
+.dse-color-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px}
+.dse-color-arrows{display:flex;gap:8px;flex:0 0 auto}
+.dse-color-arrows.dse-color-arrows--hidden{display:none}
+
+.dse-scroll-arrow{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1.5px solid #ddd;background:#fff;color:#111;font-size:18px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12);transition:opacity .2s ease,background-color .15s ease;-webkit-tap-highlight-color:transparent;box-sizing:border-box}
 .dse-scroll-arrow:hover{background:#f5f5f5}
-.dse-scroll-arrow[disabled]{opacity:.3;cursor:default;pointer-events:none}
+.dse-scroll-arrow[disabled]{opacity:.25;cursor:default;pointer-events:none;animation:none!important}
 
-.dse-scrollbar-track{position:relative;height:4px;border-radius:4px;background:rgba(0,0,0,.08);margin:4px 4px 0}
-.dse-scrollbar-track.dse-scrollbar-hidden{display:none}
-.dse-scrollbar-thumb{position:absolute;top:0;left:0;height:100%;min-width:24px;border-radius:4px;background:rgba(0,0,0,.35);cursor:grab;touch-action:none}
-.dse-scrollbar-thumb:active{cursor:grabbing;background:rgba(0,0,0,.5)}
+/* Subtle attention-drawing pulse on the "next" arrow - only while it's actually
+   usable. [disabled] above forces animation:none, so this stops automatically
+   both when nothing needs scrolling at all and once the user reaches the end.
+   Runs a handful of times rather than forever: enough to catch the eye without
+   leaving a permanently-moving element on the page (an infinite animation is
+   both a lingering distraction and something prefers-reduced-motion users -
+   and motion-sensitive shoppers generally - should not be stuck with). */
+@keyframes dse-arrow-pulse{0%,100%{transform:translateX(0)}50%{transform:translateX(3px)}}
+.dse-scroll-arrow--next:not([disabled]){animation-name:dse-arrow-pulse;animation-duration:1.4s;animation-timing-function:ease-in-out;animation-iteration-count:4}
+@media (prefers-reduced-motion:reduce){
+	.dse-scroll-arrow--next{animation:none!important}
+}
 
-.dse-color-swatch,.dse-color-swatch-thumb,.dse-size-pill,.dse-scroll-arrow,.dse-scrollbar-thumb{box-sizing:border-box}
+/* The swatch row IS the scroll container (native overflow-x:auto touch/swipe,
+   no wrapper element) and the styled "dedicated container" (light border +
+   subtle background) at the same time. */
+.dse-color-swatches{display:flex;align-items:flex-start;gap:18px;overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none;-ms-overflow-style:none;border:1px solid #e8e8e8;background:#fafafa;border-radius:14px;padding:14px;margin:0;list-style:none;transition:border-color .15s ease,background-color .15s ease}
+.dse-color-swatches::-webkit-scrollbar{display:none}
+.dse-color-swatches.dse-attr-error{border-color:#d32f2f;background:#fff6f6}
+
+.dse-color-swatch,.dse-color-swatch-thumb,.dse-size-pill{box-sizing:border-box}
 .dse-color-swatch{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 auto;width:78px;padding:0;border:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .dse-color-swatch-thumb{position:relative;width:78px;height:78px;border-radius:12px;border:2px solid transparent;background:#f2f2f2;overflow:hidden;transition:border-color .15s ease,transform .1s ease}
 .dse-color-swatch-thumb img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
@@ -140,20 +155,25 @@ final class Dokan_Swatches_Enhancer {
 .dse-color-swatch.dse-disabled{opacity:.4;cursor:not-allowed}
 .dse-color-swatch.dse-disabled .dse-color-swatch-thumb::before{content:"";position:absolute;left:-6px;right:-6px;top:50%;border-top:1px solid rgba(0,0,0,.6);transform:rotate(-18deg)}
 
-.dse-noselect{-webkit-user-select:none;user-select:none}
-
 @media (min-width:768px){
 	.dse-color-swatch{width:88px}
 	.dse-color-swatch-thumb{width:88px;height:88px}
 }
 
 /* ---------- Size pills ---------- */
-.dse-size-pills{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px;list-style:none;padding:0}
+.dse-size-pills{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px;list-style:none;padding:0;transition:outline-color .15s ease}
 .dse-size-pill{min-width:44px;height:40px;padding:0 14px;border-radius:999px;border:1.5px solid #ccc;background:#fff;font-size:13px;font-weight:600;letter-spacing:.02em;cursor:pointer;color:#222;transition:background-color .15s ease,border-color .15s ease,color .15s ease;-webkit-tap-highlight-color:transparent}
 .dse-size-pill:hover{border-color:#888}
 .dse-size-pill.selected{background:#111;border-color:#111;color:#fff}
 .dse-size-pill.dse-disabled{opacity:.45;cursor:not-allowed;text-decoration:line-through;color:#999;background:#f7f7f7}
 .dse-size-pill.dse-disabled:hover{border-color:#ccc}
+.dse-size-pills.dse-attr-error{outline:2px solid #d32f2f;outline-offset:6px;border-radius:12px}
+
+/* ---------- "Please select a Colour/Size" validation notice ---------- */
+.dse-validation-notice{background:#fdecea;border:1px solid #f5c2c0;color:#9a1c1c;font-size:13px;line-height:1.4;padding:10px 14px;border-radius:8px;margin:0 0 14px}
+
+/* ---------- Smooth cross-fade when the gallery image swaps ---------- */
+.dse-gallery-fade{transition:opacity .18s ease}
 
 .dse-swatches-relocated{margin-top:8px;margin-bottom:18px}
 CSS;
@@ -314,19 +334,21 @@ CSS;
 		var self = this;
 		var attrKey = $select.attr('name');
 		var labelInfo = this.captureAttributeLabel($select, 'Colour');
+		$select.data('dse-label-text', labelInfo.text || 'Colour');
 
-		var $group = $('<div>', { 'class': 'dse-color-group' });
-		$group.append(
-			$('<div>', { 'class': 'dse-attr-label' }).text(labelInfo.text || 'Colour').css(labelInfo.style)
-		);
+		var $label = $('<div>', { 'class': 'dse-attr-label' }).text(labelInfo.text || 'Colour').css(labelInfo.style);
+		var $prevBtn = $('<button>', { type: 'button', 'class': 'dse-scroll-arrow dse-scroll-arrow--prev', 'aria-label': 'Scroll left' }).html('&laquo;');
+		var $nextBtn = $('<button>', { type: 'button', 'class': 'dse-scroll-arrow dse-scroll-arrow--next', 'aria-label': 'Scroll right' }).html('&raquo;');
+		var $arrowsWrap = $('<div>', { 'class': 'dse-color-arrows' }).append($prevBtn, $nextBtn);
+		var $header = $('<div>', { 'class': 'dse-color-header' }).append($label, $arrowsWrap);
 
-		var $track = $('<div>', {
+		var $row = $('<div>', {
 			'class': 'dse-color-swatches',
 			role: 'listbox',
 			'aria-label': labelInfo.text || 'Colour'
 		});
-		$track.data('attribute', attrKey);
-		$track.data('instance', self);
+		$row.data('attribute', attrKey);
+		$row.data('instance', self);
 
 		$select.find('option').each(function () {
 			var $opt = $(this);
@@ -367,19 +389,12 @@ CSS;
 				$swatch.addClass('dse-disabled').prop('disabled', true).attr('aria-disabled', 'true');
 			}
 
-			$track.append($swatch);
+			$row.append($swatch);
 		});
 
-		var $scroller = $('<div>', { 'class': 'dse-color-scroller' }).append($track);
-		var $prevBtn = $('<button>', { type: 'button', 'class': 'dse-scroll-arrow dse-scroll-arrow--prev', 'aria-label': 'Scroll left' }).html('&#8249;');
-		var $nextBtn = $('<button>', { type: 'button', 'class': 'dse-scroll-arrow dse-scroll-arrow--next', 'aria-label': 'Scroll right' }).html('&#8250;');
-		var $carousel = $('<div>', { 'class': 'dse-color-carousel' }).append($prevBtn, $scroller, $nextBtn);
-		var $scrollbarThumb = $('<div>', { 'class': 'dse-scrollbar-thumb' });
-		var $scrollbarTrack = $('<div>', { 'class': 'dse-scrollbar-track' }).append($scrollbarThumb);
+		var $group = $('<div>', { 'class': 'dse-color-group' }).append($header, $row);
 
-		$group.append($carousel, $scrollbarTrack);
-
-		$select.addClass('dse-hidden-select').data('dse-wrap', $track);
+		$select.addClass('dse-hidden-select').data('dse-wrap', $row);
 		$select.after($group);
 
 		// Deliberately NOT calling initColorCarousel() here yet. At this point the
@@ -394,144 +409,78 @@ CSS;
 		// the group has already been moved out of the table and the measurements
 		// it takes reflect real, final layout.
 		$group.data('carousel-refs', {
-			$carousel: $carousel,
-			$scroller: $scroller,
-			$track: $track,
+			$group: $group,
+			$row: $row,
 			$prevBtn: $prevBtn,
 			$nextBtn: $nextBtn,
-			$scrollbarTrack: $scrollbarTrack,
-			$scrollbarThumb: $scrollbarThumb
+			$arrowsWrap: $arrowsWrap
 		});
 	};
 
 	/**
-	 * Wires the scroll viewport up to: (a) left/right arrow buttons, (b) a
-	 * custom draggable scrollbar thumb mirroring native scroll position, and
-	 * (c) a deliberate "half swatch" cutoff at the trailing edge whenever the
+	 * Wires the swatch row - which is itself the native-scrolling element - up
+	 * to: (a) left/right arrow buttons (hidden entirely when nothing needs
+	 * scrolling, pulsing on the "next" arrow via CSS while it's usable), and
+	 * (b) a deliberate "half swatch" cutoff at the trailing edge whenever the
 	 * swatches overflow, so shoppers get a visual hint that more colors exist.
 	 * All measurements are taken from the live DOM so it stays correct across
 	 * breakpoints and whatever number of colors a vendor's product has.
 	 */
-	DSEProduct.prototype.initColorCarousel = function ($carousel, $scroller, $track, $prevBtn, $nextBtn, $scrollbarTrack, $scrollbarThumb) {
-		var dragging = false;
-		var dragStartX = 0;
-		var dragStartScrollLeft = 0;
-		var scrollerEl = $scroller.get(0);
+	DSEProduct.prototype.initColorCarousel = function ($group, $row, $prevBtn, $nextBtn, $arrowsWrap) {
+		var rowEl = $row.get(0);
 
-		// scrollWidth reflects the true overflowing content extent. $track.outerWidth()
-		// would not: .dse-color-swatches is a plain block box inside the scroller, so its
-		// own width just fills the parent (normal block `width:auto` behavior) - it does
-		// not grow to fit its nowrap flex children, even though they visually overflow it.
-		function maxScroll() {
-			return Math.max(0, scrollerEl.scrollWidth - $scroller.innerWidth());
-		}
+		function updateArrowState() {
+			var overflowing = rowEl.scrollWidth > rowEl.clientWidth + 1;
 
-		function updateScrollbar() {
-			var trackWidth = scrollerEl.scrollWidth;
-			var viewportWidth = $scroller.innerWidth();
-
-			if (trackWidth <= viewportWidth + 1) {
-				$scrollbarTrack.addClass('dse-scrollbar-hidden');
+			if (!overflowing) {
+				$arrowsWrap.addClass('dse-color-arrows--hidden');
 				$prevBtn.prop('disabled', true);
 				$nextBtn.prop('disabled', true);
 				return;
 			}
 
-			$scrollbarTrack.removeClass('dse-scrollbar-hidden');
-
-			var scrollable = trackWidth - viewportWidth;
-			var scrollRatio = scrollable > 0 ? (scrollerEl.scrollLeft / scrollable) : 0;
-			var trackBoxWidth = $scrollbarTrack.width();
-			var thumbWidth = Math.max(24, (viewportWidth / trackWidth) * trackBoxWidth);
-			var thumbLeft = scrollRatio * Math.max(0, trackBoxWidth - thumbWidth);
-
-			$scrollbarThumb.css({ width: thumbWidth + 'px', left: thumbLeft + 'px' });
-			$prevBtn.prop('disabled', scrollerEl.scrollLeft <= 1);
-			$nextBtn.prop('disabled', scrollerEl.scrollLeft >= scrollable - 1);
+			$arrowsWrap.removeClass('dse-color-arrows--hidden');
+			var scrollable = rowEl.scrollWidth - rowEl.clientWidth;
+			$prevBtn.prop('disabled', rowEl.scrollLeft <= 1);
+			$nextBtn.prop('disabled', rowEl.scrollLeft >= scrollable - 1);
 		}
 
 		function applyPartialCutoff() {
-			var $items = $track.children('.dse-color-swatch');
+			var $items = $row.children('.dse-color-swatch');
 			if ($items.length < 2) {
 				return;
 			}
 
-			var containerWidth = $carousel.parent().innerWidth() || $carousel.innerWidth();
-			var arrowsWidth = ($prevBtn.outerWidth(true) || 0) + ($nextBtn.outerWidth(true) || 0);
-			var available = Math.max(120, containerWidth - arrowsWidth);
+			var containerWidth = $group.innerWidth();
 			var itemOuter = $items.eq(0).outerWidth(true);
-
-			if (!itemOuter) {
+			if (!containerWidth || !itemOuter) {
 				return;
 			}
 
-			var naturalTrackWidth = 0;
+			var naturalWidth = 0;
 			$items.each(function () {
-				naturalTrackWidth += $(this).outerWidth(true);
+				naturalWidth += $(this).outerWidth(true);
 			});
 
-			if (naturalTrackWidth <= available) {
-				$scroller.css('max-width', '');
+			if (naturalWidth <= containerWidth) {
+				$row.css('max-width', '');
 			} else {
-				var itemsFit = Math.max(1, Math.floor(available / itemOuter));
-				var visible = Math.min(available, (itemsFit + 0.5) * itemOuter);
-				$scroller.css('max-width', Math.floor(visible) + 'px');
+				var itemsFit = Math.max(1, Math.floor(containerWidth / itemOuter));
+				var visible = Math.min(containerWidth, (itemsFit + 0.5) * itemOuter);
+				$row.css('max-width', Math.floor(visible) + 'px');
 			}
 
-			updateScrollbar();
+			updateArrowState();
 		}
 
-		$scroller.on('scroll', function () {
-			if (!dragging) {
-				updateScrollbar();
-			}
-		});
+		$row.on('scroll', updateArrowState);
 
 		$prevBtn.on('click', function () {
-			$scroller.stop(true).animate({ scrollLeft: '-=' + ($scroller.innerWidth() * 0.8) }, 250);
+			$row.stop(true).animate({ scrollLeft: '-=' + (rowEl.clientWidth * 0.8) }, 250);
 		});
 
 		$nextBtn.on('click', function () {
-			$scroller.stop(true).animate({ scrollLeft: '+=' + ($scroller.innerWidth() * 0.8) }, 250);
-		});
-
-		$scrollbarThumb.on('mousedown touchstart', function (e) {
-			dragging = true;
-			dragStartX = (e.type === 'touchstart') ? e.originalEvent.touches[0].clientX : e.clientX;
-			dragStartScrollLeft = scrollerEl.scrollLeft;
-			$(document.body).addClass('dse-noselect');
-			e.preventDefault();
-		});
-
-		$(document).on('mousemove touchmove', function (e) {
-			if (!dragging) {
-				return;
-			}
-			var clientX = (e.type === 'touchmove') ? e.originalEvent.touches[0].clientX : e.clientX;
-			var trackBoxWidth = $scrollbarTrack.width();
-			var thumbWidth = $scrollbarThumb.width();
-			var deltaRatio = (clientX - dragStartX) / Math.max(1, (trackBoxWidth - thumbWidth));
-			scrollerEl.scrollLeft = Math.min(maxScroll(), Math.max(0, dragStartScrollLeft + deltaRatio * maxScroll()));
-			updateScrollbar();
-		});
-
-		$(document).on('mouseup touchend', function () {
-			if (dragging) {
-				dragging = false;
-				$(document.body).removeClass('dse-noselect');
-			}
-		});
-
-		$scrollbarTrack.on('mousedown', function (e) {
-			if ($(e.target).is($scrollbarThumb)) {
-				return;
-			}
-			var trackBoxWidth = $scrollbarTrack.width();
-			var thumbWidth = $scrollbarThumb.width();
-			var offsetX = e.pageX - $scrollbarTrack.offset().left - (thumbWidth / 2);
-			var ratio = Math.min(1, Math.max(0, offsetX / Math.max(1, (trackBoxWidth - thumbWidth))));
-			scrollerEl.scrollLeft = ratio * maxScroll();
-			updateScrollbar();
+			$row.stop(true).animate({ scrollLeft: '+=' + (rowEl.clientWidth * 0.8) }, 250);
 		});
 
 		$(window).on('resize.dse-color-carousel', applyPartialCutoff);
@@ -543,10 +492,16 @@ CSS;
 	DSEProduct.prototype.buildSizePills = function ($select) {
 		var self = this;
 		var attrKey = $select.attr('name');
+		// Captured for the "Please select a Size" validation message only - no
+		// heading is injected here (unlike Colour), since the theme's own native
+		// <label> for this row is left visible and already serves that purpose.
+		var labelInfo = this.captureAttributeLabel($select, 'Size');
+		$select.data('dse-label-text', labelInfo.text || 'Size');
+
 		var $wrap = $('<div>', {
 			'class': 'dse-size-pills',
 			role: 'listbox',
-			'aria-label': 'Size'
+			'aria-label': labelInfo.text || 'Size'
 		});
 		$wrap.data('attribute', attrKey);
 		$wrap.data('instance', self);
@@ -617,7 +572,7 @@ CSS;
 		// measuring while still inside the variations <table> is unsafe.
 		var refs = $colorGroup.data('carousel-refs');
 		if (refs) {
-			this.initColorCarousel(refs.$carousel, refs.$scroller, refs.$track, refs.$prevBtn, refs.$nextBtn, refs.$scrollbarTrack, refs.$scrollbarThumb);
+			this.initColorCarousel(refs.$group, refs.$row, refs.$prevBtn, refs.$nextBtn, refs.$arrowsWrap);
 		}
 	};
 
@@ -652,8 +607,91 @@ CSS;
 			var $select = $(this);
 			self.syncSelectedState($select);
 
+			var $wrap = $select.data('dse-wrap');
+			if ($wrap && $select.val()) {
+				$wrap.removeClass('dse-attr-error');
+			}
+			if (self.$noticeEl && self.getMissingAttributes().length === 0) {
+				self.clearValidationNotice();
+			}
+
 			if (self.detectKind($select) === 'color') {
 				self.maybeSwapForColor($select);
+			}
+		});
+
+		// Covers a plain (non-AJAX) form submission. AJAX add-to-cart, which most
+		// WooCommerce themes use, intercepts the *button click* instead of letting
+		// the form submit natively - that path is covered separately, in capture
+		// phase, in the bootstrap below.
+		this.$form.on('submit', function (e) {
+			var missing = self.getMissingAttributes();
+			if (missing.length) {
+				e.preventDefault();
+				e.stopImmediatePropagation();
+				self.showValidationNotice(missing);
+			}
+		});
+	};
+
+	/**
+	 * @return {Array<{$select: jQuery, label: string}>}
+	 */
+	DSEProduct.prototype.getMissingAttributes = function () {
+		var missing = [];
+		this.$form.find('.variations select').each(function () {
+			var $select = $(this);
+			if (!$select.val()) {
+				missing.push({
+					$select: $select,
+					label: $select.data('dse-label-text') || 'option'
+				});
+			}
+		});
+		return missing;
+	};
+
+	DSEProduct.prototype.showValidationNotice = function (missing) {
+		this.clearValidationNotice();
+
+		missing.forEach(function (m) {
+			var $wrap = m.$select.data('dse-wrap');
+			if ($wrap) {
+				$wrap.addClass('dse-attr-error');
+			}
+		});
+
+		var labels = missing.map(function (m) { return m.label; });
+		var message = 'Please select a ' + labels.join(' and a ') + ' before adding to cart.';
+
+		var $notice = $('<div>', { 'class': 'dse-validation-notice', role: 'alert' }).text(message);
+		this.$noticeEl = $notice;
+
+		// Anchored near the price/color carousel (not deep inside the form) so it
+		// stays visible regardless of which specific attribute is missing - the
+		// color group itself may have been relocated away from the form entirely.
+		var $anchor = this.$form.closest('.summary').find('.dse-color-group').first();
+		if (!$anchor.length) {
+			$anchor = this.$form;
+		}
+		$anchor.before($notice);
+
+		var $scrollTarget = missing[0].$select.data('dse-wrap');
+		var scrollEl = ($scrollTarget && $scrollTarget.get(0)) || $notice.get(0);
+		if (scrollEl && scrollEl.scrollIntoView) {
+			scrollEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		}
+	};
+
+	DSEProduct.prototype.clearValidationNotice = function () {
+		if (this.$noticeEl) {
+			this.$noticeEl.remove();
+			this.$noticeEl = null;
+		}
+		this.$form.find('.variations select').each(function () {
+			var $wrap = $(this).data('dse-wrap');
+			if ($wrap) {
+				$wrap.removeClass('dse-attr-error');
 			}
 		});
 	};
@@ -735,12 +773,25 @@ CSS;
 			return;
 		}
 
+		// Smooth cross-fade instead of an abrupt pop: dim slightly, swap the
+		// source, then fade back in once the new image has actually loaded (with
+		// a timed fallback for cached images / data-URI sources where a fresh
+		// 'load' event may not fire).
+		$img.addClass('dse-gallery-fade').css('opacity', '0.35');
+
 		$img.attr({
 			src: image.src,
 			srcset: image.srcset || '',
 			sizes: image.sizes || '',
 			alt: image.alt || $img.attr('alt') || ''
 		});
+
+		$img.off('load.dseFade').one('load.dseFade', function () {
+			$img.css('opacity', '1');
+		});
+		setTimeout(function () {
+			$img.css('opacity', '1');
+		}, 220);
 
 		var $link = $slot.is('a') ? $slot : $slot.find('a').first();
 		if ($link.length) {
@@ -804,8 +855,38 @@ CSS;
 				return;
 			}
 			$form.data('dse-initialized', true);
-			new DSEProduct($form);
+			$form.data('dse-instance', new DSEProduct($form));
 		});
+
+		/**
+		 * Most WooCommerce themes use AJAX add-to-cart, which intercepts the
+		 * button's *click* directly rather than letting the form's native
+		 * `submit` event fire at all - so a plain form 'submit' handler alone
+		 * (see bindFormEvents) isn't reliable for catching a missing selection.
+		 * Listening in the CAPTURE phase on document guarantees this runs before
+		 * any bubble-phase click handler bound elsewhere - including WooCommerce
+		 * core's own add-to-cart script - regardless of script load order.
+		 */
+		document.addEventListener('click', function (e) {
+			var target = e.target;
+			var btn = target && target.closest ? target.closest('.single_add_to_cart_button') : null;
+			if (!btn) {
+				return;
+			}
+
+			var $form = $(btn).closest('.variations_form');
+			var instance = $form.data('dse-instance');
+			if (!instance) {
+				return;
+			}
+
+			var missing = instance.getMissingAttributes();
+			if (missing.length) {
+				e.preventDefault();
+				e.stopImmediatePropagation();
+				instance.showValidationNotice(missing);
+			}
+		}, true);
 
 		// Single delegated handler (survives the color swatches being moved next to the price).
 		$(document).on('click', '.dse-color-swatch, .dse-size-pill', function (e) {
