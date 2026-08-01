@@ -141,7 +141,9 @@ class WPSP_Hardening {
                 'install.php',
             ];
             foreach ( $blocked as $f ) {
-                if ( preg_match( '/' . preg_quote( $f, '/' ) . '$/i', $uri ) ) {
+                // Require the filename to be preceded by '/' so 'plugin-install.php' never
+                // matches the 'install.php' entry (avoids false-positive on admin pages).
+                if ( preg_match( '#(^|/)' . preg_quote( $f, '#' ) . '(\?|$)#i', $uri ) ) {
                     $ip = WPSP_IP_Manager::instance()->get_ip();
                     WPSP_IP_Manager::instance()->log( $ip, 'sensitive_file_access', "Blocked: {$f}" );
                     WPSP_IP_Manager::instance()->die_403( 'Access to this file is forbidden.' );
