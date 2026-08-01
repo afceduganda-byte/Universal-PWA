@@ -1,0 +1,240 @@
+/* ─────────────────────────────────────────────────────────────────────
+   WP Shield Pro – Admin Styles
+   ───────────────────────────────────────────────────────────────────── */
+
+/* Page layout */
+.wpsp-wrap {
+    max-width: 1100px;
+}
+
+.wpsp-page-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px !important;
+    color: #1d2327;
+    margin-bottom: 20px !important;
+}
+.wpsp-page-title .dashicons {
+    color: #1e6bcc;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+/* ── Panels ─────────────────────────────────────────────────────────── */
+.wpsp-panel {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.wpsp-panel h2 {
+    margin-top: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1d2327;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+}
+
+/* ── Stats row ──────────────────────────────────────────────────────── */
+.wpsp-stats-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.wpsp-stat-card {
+    flex: 1;
+    min-width: 160px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    border-left: 4px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.wpsp-stat-green { border-left-color: #00a32a; }
+.wpsp-stat-blue  { border-left-color: #2271b1; }
+.wpsp-stat-red   { border-left-color: #d63638; }
+.wpsp-stat-grey  { border-left-color: #999;    }
+.wpsp-stat-icon  { font-size: 28px; width: 28px; height: 28px; margin-bottom: 8px; }
+.wpsp-stat-green .wpsp-stat-icon { color: #00a32a; }
+.wpsp-stat-blue  .wpsp-stat-icon { color: #2271b1; }
+.wpsp-stat-red   .wpsp-stat-icon { color: #d63638; }
+.wpsp-stat-grey  .wpsp-stat-icon { color: #999;    }
+.wpsp-stat-number { font-size: 28px; font-weight: 700; color: #1d2327; line-height: 1; }
+.wpsp-stat-label  { font-size: 12px; color: #646970; margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+
+/* ── Module grid ────────────────────────────────────────────────────── */
+.wpsp-module-grid {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.wpsp-module-card {
+    flex: 1;
+    min-width: 180px;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    border: 2px solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+.wpsp-module-card.active {
+    border-color: #00a32a;
+    background: #f0fff4;
+}
+.wpsp-module-card.inactive {
+    border-color: #ddd;
+    background: #fafafa;
+}
+.wpsp-module-card .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+.wpsp-module-card.active .dashicons   { color: #00a32a; }
+.wpsp-module-card.inactive .dashicons { color: #999; }
+.wpsp-status-dot {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+.wpsp-module-card.active   .wpsp-status-dot { color: #00a32a; }
+.wpsp-module-card.inactive .wpsp-status-dot { color: #999; }
+
+/* ── Tables ─────────────────────────────────────────────────────────── */
+.wpsp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.wpsp-table th {
+    background: #f6f7f7;
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: 600;
+    color: #1d2327;
+    white-space: nowrap;
+}
+.wpsp-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: top;
+}
+.wpsp-table tr:hover td {
+    background: #f9f9f9;
+}
+.wpsp-td-time {
+    white-space: nowrap;
+    font-size: 12px;
+    color: #646970;
+}
+
+/* ── Badges ─────────────────────────────────────────────────────────── */
+.wpsp-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-transform: lowercase;
+    letter-spacing: .2px;
+    white-space: nowrap;
+}
+.wpsp-badge-red    { background: #fde8e8; color: #9e1111; }
+.wpsp-badge-orange { background: #fff3cd; color: #856404; }
+.wpsp-badge-green  { background: #d1fae5; color: #065f46; }
+.wpsp-badge-grey   { background: #f0f0f0; color: #555; }
+
+/* ── Toggle switches ────────────────────────────────────────────────── */
+.wpsp-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.wpsp-switch input { opacity: 0; width: 0; height: 0; }
+.wpsp-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #ccc;
+    border-radius: 24px;
+    transition: .2s;
+}
+.wpsp-slider::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: .2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.wpsp-switch input:checked + .wpsp-slider             { background: #00a32a; }
+.wpsp-switch input:checked + .wpsp-slider::before     { transform: translateX(20px); }
+.wpsp-switch input:focus  + .wpsp-slider              { box-shadow: 0 0 0 2px #2271b1; }
+
+/* ── Two-column layout ──────────────────────────────────────────────── */
+.wpsp-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+@media (max-width: 782px) {
+    .wpsp-two-col { grid-template-columns: 1fr; }
+}
+
+/* ── Log toolbar ────────────────────────────────────────────────────── */
+.wpsp-log-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ── Pagination ─────────────────────────────────────────────────────── */
+.wpsp-pagination {
+    margin-top: 14px;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+/* ── Empty states ───────────────────────────────────────────────────── */
+.wpsp-empty {
+    color: #646970;
+    font-style: italic;
+    padding: 10px 0;
+}
+
+/* ── form-table tweaks ──────────────────────────────────────────────── */
+.form-table th {
+    vertical-align: middle;
+}
+.form-table .description {
+    margin-top: 5px;
+    color: #646970;
+}
