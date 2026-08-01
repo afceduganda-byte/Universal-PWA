@@ -93,13 +93,23 @@ class WPSP_Bot_Firewall {
     /* ── WAF ─────────────────────────────────────────────────────────── */
 
     private function check_waf() {
-        // Collect all request data into a single string for scanning.
+        // WordPress GET params that legitimately contain URLs – never flag these.
+        $safe_get_keys = [ 'redirect_to', '_wp_http_referer', 'action', 'reauth', 'loggedout' ];
+        $get_data = $_GET;
+        foreach ( $safe_get_keys as $k ) {
+            unset( $get_data[ $k ] );
+        }
+
+        // Build scan string from sanitised GET, full POST, and cookies.
+        // Use only the path (no query string) from REQUEST_URI to avoid
+        // catching legitimate redirect_to= values that include the site URL.
         $data = '';
-        foreach ( [ $_GET, $_POST, $_COOKIE ] as $input ) {
+        foreach ( [ $get_data, $_POST, $_COOKIE ] as $input ) {
             $data .= ' ' . $this->flatten( $input );
         }
         if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-            $data .= ' ' . rawurldecode( $_SERVER['REQUEST_URI'] );
+            $path_only = strtok( $_SERVER['REQUEST_URI'], '?' );
+            $data .= ' ' . rawurldecode( $path_only );
         }
 
         foreach ( $this->waf_patterns() as $label => $pattern ) {
