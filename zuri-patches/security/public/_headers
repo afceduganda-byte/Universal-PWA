@@ -1,0 +1,46 @@
+# ZURI Africa Adventures — HTTP Security Headers
+# For Netlify / Lovable hosting (Netlify-powered).
+# These headers are sent with EVERY response, including the SPA shell,
+# static assets, and the service worker.
+#
+# HOW TO APPLY: Place this file in the project root (same level as package.json).
+# Vite will copy it into dist/ automatically (it treats public/ as the copy source,
+# so put it at public/_headers — Netlify reads it from the dist root after build).
+# Actually: put this file at <project-root>/_headers (not inside public/).
+# Netlify reads _headers from the published directory (dist/), so either:
+#   a) Place at project-root/_headers and add it to vite.config copyPublicDir, OR
+#   b) Place at public/_headers (Vite copies public/ → dist/) — RECOMMENDED.
+
+/*
+  # Clickjacking protection — prevents your site being embedded in iframes on other domains
+  X-Frame-Options: DENY
+
+  # Stops browsers from MIME-sniffing — prevents content-type confusion attacks
+  X-Content-Type-Options: nosniff
+
+  # Controls what referrer information is sent with requests
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Disables dangerous browser features not needed by this app
+  Permissions-Policy: camera=(), microphone=(), usb=(), serial=(), bluetooth=(), payment=(self "https://zuriafricaadventures.com")
+
+  # Legacy XSS filter (IE/Edge)
+  X-XSS-Protection: 1; mode=block
+
+  # Content Security Policy — the main XSS defense.
+  # Audit notes:
+  #   - 'unsafe-inline' for script-src is required for the SW cleanup inline script
+  #     in index.html and the Calendly widget. Replace with a nonce-based approach
+  #     if you remove those inline scripts in the future.
+  #   - mapbox-gl ships its own worker scripts via blob:, so worker-src needs blob:.
+  #   - Supabase realtime uses wss:// — connect-src covers it.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.calendly.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://pajzbkrjvhiebfolbyoc.supabase.co wss://pajzbkrjvhiebfolbyoc.supabase.co https://assets.calendly.com https://api.mapbox.com https://events.mapbox.com https://libretranslate.com; frame-src https://calendly.com; worker-src 'self' blob:; media-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;
+
+  # HSTS: force HTTPS for 1 year (including subdomains)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# Supabase anon key is intentionally public — no special headers needed.
+# Service worker script — allow same-origin fetch
+/sw-push.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  Service-Worker-Allowed: /
