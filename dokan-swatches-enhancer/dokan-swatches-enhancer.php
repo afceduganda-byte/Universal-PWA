@@ -3,7 +3,7 @@
  * Plugin Name:       Dokan Swatches Enhancer
  * Plugin URI:        https://github.com/afceduganda-byte/universal-pwa
  * Description:       Mobile-first color image swatches and size pill buttons for WooCommerce variation forms. Works for any variable product regardless of who created it - store admins editing products directly in WP Admin > Products, and Dokan vendors managing their own listings, both get swatches automatically. Also plays nicely with YayCurrency Pro and PesaPal on multi-vendor marketplaces. Zero configuration required.
- * Version:           1.3.0
+ * Version:           1.4.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * WC requires at least: 5.0
@@ -22,7 +22,7 @@ if ( ! class_exists( 'Dokan_Swatches_Enhancer' ) ) :
 
 final class Dokan_Swatches_Enhancer {
 
-	const VERSION = '1.3.0';
+	const VERSION = '1.4.0';
 	const HANDLE  = 'dokan-swatches-enhancer';
 
 	/** @var Dokan_Swatches_Enhancer|null */
@@ -143,8 +143,8 @@ final class Dokan_Swatches_Enhancer {
 .dse-color-swatches.dse-attr-error{border-color:#d32f2f;background:#fff6f6}
 
 .dse-color-swatch,.dse-color-swatch-thumb,.dse-size-pill{box-sizing:border-box}
-.dse-color-swatch{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 auto;width:78px;padding:0;border:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.dse-color-swatch-thumb{position:relative;width:78px;height:78px;border-radius:12px;border:2px solid transparent;background:#f2f2f2;overflow:hidden;transition:border-color .15s ease,transform .1s ease}
+.dse-color-swatch{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 auto;width:94px;padding:0;border:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dse-color-swatch-thumb{position:relative;width:94px;height:94px;border-radius:12px;border:2px solid transparent;background:#f2f2f2;overflow:hidden;transition:border-color .15s ease,transform .1s ease}
 .dse-color-swatch-thumb img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .dse-color-swatch-thumb--text{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#333;text-align:center;padding:4px;word-break:break-word}
 .dse-color-swatch-caption{width:100%;font-size:11px;line-height:1.3;color:#333;text-align:center;white-space:normal;word-break:break-word}
@@ -156,8 +156,8 @@ final class Dokan_Swatches_Enhancer {
 .dse-color-swatch.dse-disabled .dse-color-swatch-thumb::before{content:"";position:absolute;left:-6px;right:-6px;top:50%;border-top:1px solid rgba(0,0,0,.6);transform:rotate(-18deg)}
 
 @media (min-width:768px){
-	.dse-color-swatch{width:88px}
-	.dse-color-swatch-thumb{width:88px;height:88px}
+	.dse-color-swatch{width:108px}
+	.dse-color-swatch-thumb{width:108px;height:108px}
 }
 
 /* ---------- Size pills ---------- */
